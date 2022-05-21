@@ -52,6 +52,30 @@ public class FileStoreFlinkFormatE2eTest extends E2eTestBase {
         checkResult("1, Hi", "2, Hello");
     }
 
+    @Test
+    public void testParquet() throws Exception {
+        String tableStoreDdl =
+                "CREATE TABLE IF NOT EXISTS table_store (\n"
+                        + "    id INT,\n"
+                        + "    name VARCHAR\n"
+                        + ") WITH (\n"
+                        + "    'bucket' = '3',\n"
+                        + "    'path' = '%s',\n"
+                        + "    'file.format' = 'parquet'\n"
+                        + ");";
+        tableStoreDdl =
+                String.format(
+                        tableStoreDdl,
+                        TEST_DATA_DIR + "/" + UUID.randomUUID().toString() + ".store");
+
+        runSql("INSERT INTO table_store VALUES (1, 'ParquetNo1'), (2, 'HelloYb');", tableStoreDdl);
+        runSql(
+                "INSERT INTO result1 SELECT * FROM table_store;",
+                tableStoreDdl,
+                createResultSink("result1", "id INT, name VARCHAR"));
+        checkResult("1, ParquetNo1", "2, HelloYb");
+    }
+
     private void runSql(String sql, String... ddls) throws Exception {
         runSql(
                 "SET 'execution.runtime-mode' = 'batch';\n"
