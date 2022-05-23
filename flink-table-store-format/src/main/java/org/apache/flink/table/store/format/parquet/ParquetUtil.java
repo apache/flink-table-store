@@ -60,7 +60,7 @@ public class ParquetUtil {
             List<ColumnChunkMetaData> columnChunkMetaDataList = blockMetaData.getColumns();
             for (ColumnChunkMetaData columnChunkMetaData : columnChunkMetaDataList) {
                 Statistics stats = columnChunkMetaData.getStatistics();
-                String columnName = columnChunkMetaData.getPrimitiveType().getName();
+                String columnName = columnChunkMetaData.getPath().toDotString();
                 Statistics midStats;
                 if (!resultStats.containsKey(columnName)) {
                     midStats = stats;
