@@ -30,13 +30,14 @@ import org.apache.flink.table.types.logical.RowType;
 
 import java.util.Optional;
 
-/** Orc {@link FileFormat}. */
+/** Parquet {@link FileFormat}. */
 public class ParquetFileFormat extends FileFormat {
 
     private final org.apache.flink.formats.parquet.ParquetFileFormatFactory factory;
     private final Configuration formatOptions;
 
     public ParquetFileFormat(Configuration formatOptions) {
+        super(org.apache.flink.formats.parquet.ParquetFileFormatFactory.IDENTIFIER);
         this.factory = new org.apache.flink.formats.parquet.ParquetFileFormatFactory();
         this.formatOptions = formatOptions;
     }
