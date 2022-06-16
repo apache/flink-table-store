@@ -27,9 +27,8 @@ public class FileStoreBuiltInFormatE2eTest extends E2eTestBase {
 
     @Test
     public void testParquet() throws Exception {
-        String tableStoreDdl =
-                "CREATE TABLE IF NOT EXISTS table_store (\n"
-                        + "id INT,\n"
+        String schema =
+                "id INT,\n"
                         + "isMan BOOLEAN,\n"
                         + "houseNum TINYINT,\n"
                         + "debugNum SMALLINT,\n"
@@ -42,10 +41,13 @@ public class FileStoreBuiltInFormatE2eTest extends E2eTestBase {
                         + "f4 CHAR(10),\n"
                         + "f5 VARCHAR(10),\n"
                         + "f6 STRING,\n"
-                        + "f7 DATE\n"
+                        + "f7 DATE\n";
+        String tableStoreDdl =
+                "CREATE TABLE IF NOT EXISTS table_store (\n"
+                        + schema
                         + ") WITH (\n"
                         + "    'bucket' = '3',\n"
-                        + "    'path' = '%s',\n"
+                        + "    'root-path' = '%s',\n"
                         + "    'file.format' = 'parquet'\n"
                         + ");";
         tableStoreDdl =
@@ -84,23 +86,7 @@ public class FileStoreBuiltInFormatE2eTest extends E2eTestBase {
                         + "'这是一个 built in parquet format',"
                         + "DATE '2022-05-23'"
                         + ")";
-        String resultDdl =
-                createResultSink(
-                        "result1",
-                        "id INT,\n"
-                                + "isMan BOOLEAN,\n"
-                                + "houseNum TINYINT,\n"
-                                + "debugNum SMALLINT,\n"
-                                + "age INT,\n"
-                                + "cash BIGINT,\n"
-                                + "money FLOAT,\n"
-                                + "f1 DOUBLE,\n"
-                                + "f2 DECIMAL(5, 3),\n"
-                                + "f3 DECIMAL(26, 8),\n"
-                                + "f4 CHAR(10),\n"
-                                + "f5 VARCHAR(10),\n"
-                                + "f6 STRING,\n"
-                                + "f7 DATE");
+        String resultDdl = createResultSink("result1", schema);
         runSql(insertDml, tableStoreDdl);
         runSql(
                 "INSERT INTO result1 SELECT * FROM table_store where id > 1;",
